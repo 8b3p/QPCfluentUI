@@ -1,0 +1,35 @@
+import { StandardControlReact } from "pcf-react";
+import React = require("react");
+import ReactDOM = require("react-dom");
+import App from "./components/App";
+import { IInputs, IOutputs } from "./generated/ManifestTypes";
+import QPCcontrolVM, { serviceProviderName } from "./ViewModels/QPCcontrolVM";
+
+export class QuotePrintConfigurator extends StandardControlReact<
+  IInputs,
+  IOutputs
+> {
+  constructor() {
+    super();
+    this.renderOnParametersChanged = false;
+    this.initServiceProvider = serviceProvider => {
+      serviceProvider.register(
+        serviceProviderName,
+        new QPCcontrolVM(serviceProvider, this.context)
+      );
+    };
+
+    this.reactCreateElement = (container, width, height, serviceProvider) => {
+      // console.log(`rendering form index, height: ${height}, width: ${width}`);
+      // console.log(`the height form index : ${container.clientHeight}`);
+      ReactDOM.render(
+        React.createElement(App, {
+          serviceProvider: serviceProvider,
+          controlWidth: width,
+          controlHeight: container.clientHeight,
+        }),
+        container
+      );
+    };
+  }
+}
