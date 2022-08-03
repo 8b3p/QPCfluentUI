@@ -1,4 +1,9 @@
-import { mergeStyleSets, StackItem } from "@fluentui/react";
+import {
+  mergeStyleSets,
+  StackItem,
+  TooltipDelay,
+  TooltipHost,
+} from "@fluentui/react";
 import { ChevronRightMedIcon } from "@fluentui/react-icons-mdl2";
 import { observer } from "mobx-react-lite";
 import { JSXElementConstructor, ReactElement, useState } from "react";
@@ -75,9 +80,6 @@ const QuoteTreeItem = (props: props) => {
   });
 
   if (props.level == 3) {
-    // console.log("in level 3");
-    // console.log(props.currentNode);
-    // console.log(props.currentNode.name);
   }
 
   return (
@@ -105,7 +107,16 @@ const QuoteTreeItem = (props: props) => {
           ) : (
             <div className={styles.dummyIcon} />
           )}
-          <div className={styles.text}>{props.currentNode.name}</div>
+          {props.level === 3 ? (
+            <TooltipHost
+              content={props.currentNode.name}
+              delay={TooltipDelay.long}
+            >
+              <div className={styles.text}>{props.currentNode.name}</div>
+            </TooltipHost>
+          ) : (
+            <div className={styles.text}>{props.currentNode.name}</div>
+          )}
         </div>
         <ConfigTreeCheckBox
           className={styles["check-boxes"]}

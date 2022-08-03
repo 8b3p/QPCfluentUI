@@ -40,7 +40,7 @@ const ConfigTreeCheckBox = (props: props) => {
       display: "flex",
       justifyContent: "center",
       maxWidth: "30px",
-      maxHeight: "25.px",
+      maxHeight: "25px",
     },
   });
 
