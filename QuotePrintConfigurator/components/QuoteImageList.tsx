@@ -14,7 +14,7 @@ const QuoteImageList = (props: props) => {
       display: vm.displaySalesPerson,
     },
     "css-row": {
-      marginBottom: "5%",
+      // marginBottom: "2%",
       width: "100%",
       display: "flex",
       justifyContent: "center",

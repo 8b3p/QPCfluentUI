@@ -20,7 +20,13 @@ interface props {
 
 const QuoteTreeItem = (props: props) => {
   const vm = useServiceProvider();
-  const [childVisible, setChildvisibility] = useState(false);
+  let defaultStatus: boolean;
+  if (props.level == 1) {
+    defaultStatus = true;
+  } else {
+    defaultStatus = false;
+  }
+  const [childVisible, setChildvisibility] = useState(defaultStatus);
 
   const styles = mergeStyleSets({
     StackItem: {

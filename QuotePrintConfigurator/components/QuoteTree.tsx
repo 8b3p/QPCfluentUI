@@ -28,11 +28,9 @@ const QuoteTree = (props: props) => {
 
   const styles = mergeStyleSets({
     Stack: {
-      maxHeight: "100%",
     },
     Container: {
-      // backgroundColor: "#eeeeee",
-      overflowX: "hidden",
+      overflow: "hidden",
     },
   });
   return (
