@@ -6,7 +6,7 @@ import { IInputs } from "../generated/ManifestTypes";
 export default class QPCcontrolVM {
   serviceProvider = {} as ServiceProvider;
   controlContext = {} as ControlContextService;
-  private firstLoad = true;
+  firstLoad = true;
   private _currentNode: string = "";
   checkboxLoading = false;
   public get currentNode() {
@@ -406,7 +406,6 @@ export default class QPCcontrolVM {
   };
 
   onTreeItemClickedHandler = (node: RenderTree) => {
-    console.log(node);
     this.currentNode = node;
     this.SalesPersonNote = node.SalesPersonNote;
     this.ImageURL = node.PhotoURL;

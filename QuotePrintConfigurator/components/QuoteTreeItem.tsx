@@ -39,7 +39,7 @@ const QuoteTreeItem = (props: props) => {
       justifyContent: "space-between",
     },
     text: {
-      fontSize: "1.2rem",
+      fontSize: "14px",
     },
     leftSide: {
       display: "flex",

@@ -2,6 +2,7 @@ import React = require("react");
 import { observer } from "mobx-react";
 import { Label, mergeStyleSets, TextField } from "@fluentui/react";
 import { useServiceProvider } from "./context";
+import { LockIcon } from "@fluentui/react-icons-mdl2";
 
 const QuoteDetails = () => {
   const vm = useServiceProvider();
@@ -22,16 +23,24 @@ const QuoteDetails = () => {
     "text-field-label": {
       margin: "1%",
       marginBottom: "0",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    header: {
+      fontSize: "20pxs",
+      color: "black",
+    },
+    "label-icon": {
+      margin: "0",
     },
   });
 
-// console.log(vm.currentNode);
-
   return (
     <>
-      <h1>
+      <div className={styles.header}>
         {vm.currentNode.name ? vm.currentNode.name : "no name (to be fixed)"}
-      </h1>
+      </div>
       <div className={styles["sales-person-note"]}>
         <Label
           className={styles["text-field-label"]}
@@ -57,7 +66,8 @@ const QuoteDetails = () => {
           className={styles["text-field-label"]}
           htmlFor={vm.currentNode.id + 1000}
         >
-          Description
+          Description&nbsp;
+          <LockIcon className={styles["label-icon"]} />
         </Label>
         <TextField
           id={vm.currentNode.id + 1000}

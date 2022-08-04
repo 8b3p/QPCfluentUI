@@ -58,13 +58,16 @@ const App = (props: props) => {
 
   useEffect(() => {
     vm.updateData();
-    vm.controlHeight = props.controlHeight;
-    vm.controlWidth = props.controlWidth;
+    if (vm.firstLoad) {
+      console.log("settings height in firstLoad");
+      vm.controlHeight = props.controlHeight;
+      vm.controlWidth = props.controlWidth;
+    }
+    console.log(props.controlHeight);
     return () => {
       vm.pcfContext.parameters.sampleDataSet.refresh();
     };
   }, []);
-  // console.log(`the height from app : ${props.controlHeight}`);
 
   if (!vm.isLoaded) {
     return (
