@@ -18,10 +18,7 @@ export class QuotePrintConfigurator extends StandardControlReact<
         new QPCcontrolVM(serviceProvider, this.context)
       );
     };
-
     this.reactCreateElement = (container, width, height, serviceProvider) => {
-      // console.log(`rendering form index, height: ${height}, width: ${width}`);
-      // console.log(`the height form index : ${container.clientHeight}`);
       ReactDOM.render(
         React.createElement(App, {
           serviceProvider: serviceProvider,

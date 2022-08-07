@@ -25,7 +25,6 @@ const QuoteDetails = () => {
       marginBottom: "0",
       display: "flex",
       alignItems: "center",
-      justifyContent: "center",
     },
     header: {
       fontSize: "20pxs",

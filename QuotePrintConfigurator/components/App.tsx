@@ -49,7 +49,6 @@ const App = (props: props) => {
     StackItem: {
       width: "50%",
       margin: "1em",
-      // maxHeight: "70vh",
       maxHeight: `${(vm.controlHeight as number) - 40}px`,
       overflow: "scroll",
       overflowX: "hidden",
@@ -59,11 +58,11 @@ const App = (props: props) => {
   useEffect(() => {
     vm.updateData();
     if (vm.firstLoad) {
-      console.log("settings height in firstLoad");
       vm.controlHeight = props.controlHeight;
       vm.controlWidth = props.controlWidth;
+      console.log("version 14");
     }
-    console.log(props.controlHeight);
+    
     return () => {
       vm.pcfContext.parameters.sampleDataSet.refresh();
     };

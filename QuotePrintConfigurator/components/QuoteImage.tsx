@@ -76,7 +76,6 @@ const QuoteImage = (props: props) => {
             onError={({ currentTarget }) => {
               setShowImage(false);
               currentTarget.onerror = null; // prevents looping
-              console.log("image failed");
             }}
             className={styles["css-image-style"]}
           />

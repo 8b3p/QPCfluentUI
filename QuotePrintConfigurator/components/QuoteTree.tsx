@@ -12,23 +12,18 @@ const QuoteTree = (props: props) => {
 
   const renderTree = (node: RenderTree, level: number): React.ReactElement => {
     return (
-      <>
-        <div key={node.id}>
-          <>
-            <QuoteTreeItem level={level} currentNode={node}>
-              {Array.isArray(node.children)
-                ? node.children?.map(node => renderTree(node, level + 1))
-                : null}
-            </QuoteTreeItem>
-          </>
-        </div>
-      </>
+      <div key={node.id}>
+        <QuoteTreeItem level={level} currentNode={node}>
+          {Array.isArray(node.children)
+            ? node.children?.map(node => renderTree(node, level + 1))
+            : null}
+        </QuoteTreeItem>
+      </div>
     );
   };
 
   const styles = mergeStyleSets({
-    Stack: {
-    },
+    Stack: {},
     Container: {
       overflow: "hidden",
     },

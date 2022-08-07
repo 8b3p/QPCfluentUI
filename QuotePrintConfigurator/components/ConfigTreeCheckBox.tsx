@@ -45,7 +45,6 @@ const ConfigTreeCheckBox = (props: props) => {
   });
 
   const renderCheckBoxes = () => {
-    // console.log(props.currentNode.EntityType);
     if (props.currentNode.EntityType == "nmc_equipmentbuilderline") {
       return (
         <>

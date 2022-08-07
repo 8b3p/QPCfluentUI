@@ -77,7 +77,6 @@ export default class QPCcontrolVM {
       }
       return null;
     } catch (err: any) {
-      console.log(typeof err);
       throw new Error(err.message);
     }
   };
@@ -274,30 +273,6 @@ export default class QPCcontrolVM {
           this.currentNode = treeArray;
           this.firstLoad = false;
         }
-
-        // console.log(treeArray);
-        // console.log(treeArray.children ? treeArray.children[0] : null);
-        // console.log(treeArray.children ? treeArray.children[1] : null);
-        // console.log(treeArray.children ? treeArray.children[2] : null);
-        // console.log(treeArray.children ? treeArray.children[3] : null);
-        // console.log(
-        //   treeArray.children
-        //     ? treeArray.children[2].children
-        //       ? treeArray.children[2].children[0]
-        //       : null
-        //     : null
-        // );
-        // console.log(
-        //   treeArray.children
-        //     ? treeArray.children[2].children
-        //       ? treeArray.children[2].children[1]
-        //       : null
-        //     : null
-        // );
-        // console.log(treeArray.children ? treeArray.children[4] : null);
-        // console.log(treeArray.children ? treeArray.children[5] : null);
-
-        // debugger;
       })
       .catch((err: any) => {
         throw new Error(err.message);
@@ -316,12 +291,10 @@ export default class QPCcontrolVM {
             crf08_includeddescription: currentCheck,
           })
           .then(response => {
-            console.log("checked the thing");
             node.RTPrintDescription = currentCheck;
             this.currentNode = node;
           })
           .catch(err => {
-            console.log("error checking the thing");
             throw new Error(err.message);
           });
       }
@@ -469,11 +442,9 @@ export default class QPCcontrolVM {
 
       CurrentUrl = this.ImageURL[ImageNumber];
       try {
-        console.log("before updating url");
         await this.pcfContext.webAPI.updateRecord(node.EntityType, node.Guid, {
           [key]: this.ImageURL[ImageNumber],
         });
-        console.log("after updating url");
         node.PhotoURL[ImageNumber] = CurrentUrl;
 
         this.currentNode = node;
