@@ -37,21 +37,19 @@ const App = (props: props) => {
       alignItems: "center",
     },
     Stack: {
-      marginRight: "2em",
-      // marginLeft: "2em",
       width: "100%",
       display: "flex",
-      maxHeight: `${(vm.controlHeight as number) - 10}px`,
+      height: `calc(${vm.controlHeight as number}px - 1%)`,
       justifyContent: "space-around",
-      alignItems: "start",
+      alignItems: "flex-start",
       border: "1px solid #eeeeee",
     },
     StackItem: {
       width: "50%",
+      // height: `${(vm.controlHeight as number) - 40}px`,
+      height: "95%",
       margin: "1em",
-      maxHeight: `${(vm.controlHeight as number) - 40}px`,
-      overflow: "scroll",
-      overflowX: "hidden",
+      overflowY: "scroll",
     },
   });
 
@@ -62,7 +60,7 @@ const App = (props: props) => {
       vm.controlWidth = props.controlWidth;
       console.log("version 14");
     }
-    
+
     return () => {
       vm.pcfContext.parameters.sampleDataSet.refresh();
     };
@@ -84,17 +82,15 @@ const App = (props: props) => {
   } else {
     return (
       <ContextProvider value={vm}>
-        <>
-          <div className={styles.Stack}>
-            <div className={styles.StackItem}>
-              <QuoteTree />
-            </div>
-            <div className={styles.StackItem}>
-              <QuoteDetails />
-              <QuoteImageList />
-            </div>
+        <div id='wrapper' className={styles.Stack}>
+          <div className={styles.StackItem}>
+            <QuoteTree />
           </div>
-        </>
+          <div className={styles.StackItem}>
+            <QuoteDetails />
+            <QuoteImageList />
+          </div>
+        </div>
       </ContextProvider>
     );
   }

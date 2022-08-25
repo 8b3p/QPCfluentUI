@@ -1,4 +1,4 @@
-import { mergeStyleSets, StackItem } from "@fluentui/react";
+import { mergeStyleSets } from "@fluentui/react";
 import { observer } from "mobx-react-lite";
 import React = require("react");
 import { RenderTree } from "../Functions/RenderTree";
@@ -25,7 +25,7 @@ const QuoteTree = (props: props) => {
   const styles = mergeStyleSets({
     Stack: {},
     Container: {
-      overflow: "hidden",
+      height: "fit-content",
     },
   });
   return (
