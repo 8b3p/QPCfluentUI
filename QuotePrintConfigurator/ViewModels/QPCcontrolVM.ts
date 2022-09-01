@@ -25,22 +25,17 @@ export default class QPCcontrolVM {
   SalesPersonNote = "";
   DisplayEquipmentLineDev = false;
   DisplayQuoteLineDev = false;
-  ImageURL = ["", "", "", ""];
-  private _displaySalesPerson = false;
   public get displaySalesPerson() {
     return this.DisplayEquipmentLineDev || this.DisplayQuoteLineDev
       ? "block"
       : "None";
   }
-  private _EquipmentLine = false;
   public get EquipmentLine() {
     return this.DisplayEquipmentLineDev ? "Block" : "None";
   }
-  private _QuotedisplayType = false;
   public get QuotedisplayType() {
     return this.DisplayQuoteLineDev ? "Block" : "None";
   }
-  private _ComputedDesc = "";
   public get ComputedDesc() {
     return this.currentNode.desc
       ? this.currentNode.desc
@@ -381,7 +376,6 @@ export default class QPCcontrolVM {
   onTreeItemClickedHandler = (node: RenderTree) => {
     this.currentNode = node;
     this.SalesPersonNote = node.SalesPersonNote;
-    this.ImageURL = node.PhotoURL;
     this.DisplayEquipmentLineDev =
       node.EntityType == "nmc_equipmentbuilderline";
     this.DisplayQuoteLineDev = node.EntityType == "quotedetail";
@@ -417,14 +411,7 @@ export default class QPCcontrolVM {
     this.SalesPersonNote = event.currentTarget.value;
   };
 
-  imageUrlChangeHandler = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ImageNumber: number
-  ) => {
-    this.ImageURL[ImageNumber] = event.currentTarget.value;
-  };
-
-  imageUrlBlurrHandler = async (ImageNumber: number) => {
+  imageUrlChangeHandler = async (imageUrl: string, ImageNumber: number) => {
     let node = this.currentNode;
 
     if (
@@ -440,14 +427,14 @@ export default class QPCcontrolVM {
           ? `crf08_url${ImageNumber + 1}`
           : "crf08_url";
 
-      CurrentUrl = this.ImageURL[ImageNumber];
+      CurrentUrl = imageUrl;
+      node.PhotoURL[ImageNumber] = CurrentUrl;
+      this.currentNode = node;
+
       try {
         await this.pcfContext.webAPI.updateRecord(node.EntityType, node.Guid, {
-          [key]: this.ImageURL[ImageNumber],
+          [key]: imageUrl,
         });
-        node.PhotoURL[ImageNumber] = CurrentUrl;
-
-        this.currentNode = node;
       } catch (err: any) {
         throw new Error(err.message);
       }

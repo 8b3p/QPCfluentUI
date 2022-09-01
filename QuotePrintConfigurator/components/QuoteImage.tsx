@@ -11,11 +11,12 @@ interface props {
 const QuoteImage = (props: props) => {
   const vm = useServiceProvider();
   const [showImage, setShowImage] = useState(true);
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
-    vm.ImageURL[props.ImageNumber] = vm.currentNode.PhotoURL
-      ? vm.currentNode.PhotoURL[props.ImageNumber]
-      : "";
+    setImageUrl(
+      vm.currentNode.PhotoURL ? vm.currentNode.PhotoURL[props.ImageNumber] : ""
+    );
     setShowImage(true);
   }, [vm.currentNode]);
 
@@ -54,15 +55,16 @@ const QuoteImage = (props: props) => {
           onChange={(
             e: FormEvent<HTMLInputElement | HTMLTextAreaElement>
           ): void => {
-            vm.imageUrlChangeHandler(e, props.ImageNumber);
-          }}
-          onBlur={() => {
-            vm.imageUrlBlurrHandler(props.ImageNumber).then(() => {
+            setImageUrl(e.currentTarget.value);
+            vm.imageUrlChangeHandler(
+              e.currentTarget.value,
+              props.ImageNumber
+            ).then(() => {
               setShowImage(true);
             });
           }}
           placeholder='Image URL'
-          value={vm.ImageURL[props.ImageNumber]}
+          value={imageUrl}
         />
       </div>
       {showImage && (
