@@ -1,7 +1,7 @@
 import { StandardControlReact } from "pcf-react";
 import React = require("react");
 import ReactDOM = require("react-dom");
-import App from "./components/App";
+import App, { props } from "./components/App";
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import QPCcontrolVM, { serviceProviderName } from "./ViewModels/QPCcontrolVM";
 
@@ -21,7 +21,7 @@ export class QuotePrintConfigurator extends StandardControlReact<
     };
     this.reactCreateElement = (container, width, height, serviceProvider) => {
       ReactDOM.render(
-        React.createElement(App, {
+        React.createElement<props>(App, {
           serviceProvider: serviceProvider,
           controlWidth: width,
           controlHeight: container.clientHeight,

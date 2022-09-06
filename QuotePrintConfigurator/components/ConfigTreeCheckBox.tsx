@@ -1,12 +1,12 @@
 import { mergeStyleSets, TooltipDelay, TooltipHost } from "@fluentui/react";
-import { Checkbox } from "@material-ui/core";
 import {
-  DescriptionOutlined,
-  NoteOutlined,
-  PaymentOutlined,
-  PhotoOutlined,
-  PrintDisabledOutlined,
-} from "@material-ui/icons";
+  KnowledgeArticleIcon,
+  MoneyIcon,
+  Photo2Icon,
+  PrintIcon,
+  QuickNoteIcon,
+} from "@fluentui/react-icons-mdl2";
+import Checkbox from "@material-ui/core/Checkbox";
 import { observer } from "mobx-react-lite";
 import React = require("react");
 import { RenderTree } from "../Functions/RenderTree";
@@ -52,8 +52,8 @@ const ConfigTreeCheckBox = (props: props) => {
             <div className={styles.checkboxWrapper}>
               <Checkbox
                 color='primary'
-                checkedIcon={<DescriptionOutlined />}
-                icon={<DescriptionOutlined />}
+                checkedIcon={<KnowledgeArticleIcon />}
+                icon={<KnowledgeArticleIcon />}
                 checked={
                   props.currentNode.RTPrintDescription == undefined ||
                   props.currentNode.RTPrintDescription == false
@@ -71,8 +71,8 @@ const ConfigTreeCheckBox = (props: props) => {
             <div className={styles.checkboxWrapper}>
               <Checkbox
                 color='primary'
-                checkedIcon={<PhotoOutlined />}
-                icon={<PhotoOutlined />}
+                checkedIcon={<Photo2Icon />}
+                icon={<Photo2Icon />}
                 className={styles.checkbox}
                 checked={
                   props.currentNode.RTPrintPhotos == undefined ||
@@ -90,8 +90,8 @@ const ConfigTreeCheckBox = (props: props) => {
             <div className={styles.checkboxWrapper}>
               <Checkbox
                 color='primary'
-                checkedIcon={<NoteOutlined />}
-                icon={<NoteOutlined />}
+                checkedIcon={<QuickNoteIcon />}
+                icon={<QuickNoteIcon />}
                 className={styles.checkbox}
                 checked={
                   props.currentNode.RTPrintNote == undefined ||
@@ -105,37 +105,18 @@ const ConfigTreeCheckBox = (props: props) => {
               />
             </div>
           </TooltipHost>
-          <TooltipHost content='Print Price' delay={TooltipDelay.long}>
+          <TooltipHost content='Include In Print' delay={TooltipDelay.long}>
             <div className={styles.checkboxWrapper}>
               <Checkbox
                 color='primary'
-                checkedIcon={<PaymentOutlined />}
-                icon={<PaymentOutlined />}
-                className={styles.checkbox}
-                checked={
-                  props.currentNode.RTPrintPrice == undefined ||
-                  props.currentNode.RTPrintPrice == false
-                    ? false
-                    : true
-                }
-                onClick={() =>
-                  vm.onCheckBoxCheckedHandler("Price", props.currentNode)
-                }
-              />
-            </div>
-          </TooltipHost>
-          <TooltipHost content='Exclude From Print' delay={TooltipDelay.long}>
-            <div className={styles.checkboxWrapper}>
-              <Checkbox
-                color='primary'
-                checkedIcon={<PrintDisabledOutlined />}
-                icon={<PrintDisabledOutlined />}
+                checkedIcon={<PrintIcon />}
+                icon={<PrintIcon />}
                 className={styles.checkbox}
                 checked={
                   props.currentNode.RTExcludeFromPrint == undefined ||
                   props.currentNode.RTExcludeFromPrint == false
-                    ? false
-                    : true
+                    ? true
+                    : false
                 }
                 onClick={() =>
                   vm.onCheckBoxCheckedHandler(
@@ -154,8 +135,8 @@ const ConfigTreeCheckBox = (props: props) => {
           <div className={styles.checkboxWrapper}>
             <Checkbox
               color='primary'
-              checkedIcon={<PaymentOutlined />}
-              icon={<PaymentOutlined />}
+              checkedIcon={<MoneyIcon />}
+              icon={<MoneyIcon />}
               className={styles.checkbox}
               checked={
                 props.currentNode.RTPrintPrice == undefined ||

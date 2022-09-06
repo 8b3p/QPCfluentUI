@@ -10,7 +10,7 @@ interface props {
 
 const QuoteImage = (props: props) => {
   const vm = useServiceProvider();
-  const [showImage, setShowImage] = useState(true);
+  const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
@@ -46,23 +46,24 @@ const QuoteImage = (props: props) => {
     },
   });
 
+  const imageUrlChangeHandler = (
+    e: FormEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setImageUrl(e.currentTarget.value);
+    vm.imageUrlChangeHandler(e.currentTarget.value, props.ImageNumber).then(
+      () => {
+        setShowImage(true);
+      }
+    );
+  };
+
   return (
     <div className={styles["css-column"]}>
       <div className={styles["css-url-save-button"]}>
         <TextField
           className={styles["text-field"]}
           underlined
-          onChange={(
-            e: FormEvent<HTMLInputElement | HTMLTextAreaElement>
-          ): void => {
-            setImageUrl(e.currentTarget.value);
-            vm.imageUrlChangeHandler(
-              e.currentTarget.value,
-              props.ImageNumber
-            ).then(() => {
-              setShowImage(true);
-            });
-          }}
+          onChange={imageUrlChangeHandler}
           placeholder='Image URL'
           value={imageUrl}
         />

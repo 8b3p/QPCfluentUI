@@ -76,7 +76,7 @@ export default class QPCcontrolVM {
     }
   };
 
-  groupByHeader = (objectArray: any[], property: any) => {
+  groupByHeader = (objectArray: any[], property: string) => {
     return objectArray.reduce((acc, obj) => {
       const key = obj[property];
 
@@ -98,7 +98,7 @@ export default class QPCcontrolVM {
       : this.items.children?.filter(CurNode => CurNode.Guid === Guid);
   };
 
-  getFetchXml = (QuoteIdValue: string) => {
+  getFetchXml = (QuoteID: string) => {
     return `?fetchXml=
       <fetch>
       <entity name="quote">
@@ -106,7 +106,7 @@ export default class QPCcontrolVM {
         <attribute name="quotenumber" />
         <attribute name="quoteid" />
         <filter>
-          <condition entityname="quotedetail" attribute="quoteid" operator="eq" value=" ${QuoteIdValue} " />
+          <condition entityname="quotedetail" attribute="quoteid" operator="eq" value=" ${QuoteID} " />
         </filter>
         <link-entity name="quotedetail" from="quoteid" to="quoteid" link-type="inner" alias="QuoteDetail">
           <attribute name="crf08_equipmentbuilder" />
@@ -154,7 +154,7 @@ export default class QPCcontrolVM {
         } catch (err: any) {
           throw new Error(err);
         }
-        let QuotationID = Object.keys(groupedQuote)[0];
+        let QuoteLineName = Object.keys(groupedQuote)[0];
 
         let treeArray: RenderTree = {
           id: "0",
@@ -171,18 +171,17 @@ export default class QPCcontrolVM {
           RTPrintPrice: false,
           RTExcludeFromPrint: false,
         };
-        if (QuotationID !== undefined) {
-          treeArray["name"] = QuotationID;
+        if (QuoteLineName !== undefined) {
+          treeArray["name"] = QuoteLineName;
           let groupedbyHeader = this.groupByHeader(
-            groupedQuote[QuotationID],
+            groupedQuote[QuoteLineName],
             "QuoteDetail.quotedetailid"
           );
-
-          let gbHeader: string[] = Object.keys(groupedbyHeader);
-          for (let i = 0; i < gbHeader.length; i++) {
+          let QuoteLineID: string[] = Object.keys(groupedbyHeader);
+          for (let i = 0; i < QuoteLineID.length; i++) {
             let Child = [];
-            for (let j = 0; j < groupedbyHeader[gbHeader[i]].length; j++) {
-              let currentChild = groupedbyHeader[gbHeader[i]][j];
+            for (let j = 0; j < groupedbyHeader[QuoteLineID[i]].length; j++) {
+              let currentChild = groupedbyHeader[QuoteLineID[i]][j];
               Child.push({
                 id: (j + (i + 1) * 10).toString(),
                 name: currentChild["EquipmentBuilderLine.nmc_designerlines"],
@@ -224,22 +223,22 @@ export default class QPCcontrolVM {
             //crf08_salespersonnote
             treeArray.children?.push({
               id: (i + 1).toString(),
-              name: groupedbyHeader[gbHeader[i]][0][
+              name: groupedbyHeader[QuoteLineID[i]][0][
                 "QuoteDetail.quotedetailname"
               ],
               children:
-                groupedbyHeader[gbHeader[i]][0][
+                groupedbyHeader[QuoteLineID[i]][0][
                   "QuoteDetail.crf08_equipmentbuilder"
                 ] == undefined
                   ? undefined
                   : Child,
               desc: "",
               SalesPersonNote:
-                groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_notes"] ==
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_notes"] ==
                 undefined
                   ? ""
-                  : groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_notes"],
-              Guid: groupedbyHeader[gbHeader[i]][0][
+                  : groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_notes"],
+              Guid: groupedbyHeader[QuoteLineID[i]][0][
                 "QuoteDetail.quotedetailid"
               ],
               EntityType: "quotedetail",
@@ -248,13 +247,13 @@ export default class QPCcontrolVM {
               RTPrintPhotos: false,
               RTPrintNote: false,
               RTPrintPrice:
-                groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_printprice"],
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_printprice"],
               RTExcludeFromPrint: false,
               PhotoURL: [
-                groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_url"] || "",
-                groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_url2"] || "",
-                groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_url3"] || "",
-                groupedbyHeader[gbHeader[i]][0]["QuoteDetail.crf08_url4"] || "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url"] || "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url2"] || "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url3"] || "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url4"] || "",
               ],
             });
           }
@@ -263,7 +262,7 @@ export default class QPCcontrolVM {
 
         this.items = treeArray;
         this.isLoaded = true;
-        this.isThereData = QuotationID !== undefined;
+        this.isThereData = QuoteLineName !== undefined;
         if (this.firstLoad) {
           this.currentNode = treeArray;
           this.firstLoad = false;
@@ -425,16 +424,22 @@ export default class QPCcontrolVM {
       key =
         node.EntityType == "nmc_equipmentbuilderline"
           ? `crf08_url${ImageNumber + 1}`
-          : "crf08_url";
+          : ImageNumber === 0
+          ? "crf08_url"
+          : `crf08_url${ImageNumber + 1}`;
 
       CurrentUrl = imageUrl;
       node.PhotoURL[ImageNumber] = CurrentUrl;
       this.currentNode = node;
 
       try {
-        await this.pcfContext.webAPI.updateRecord(node.EntityType, node.Guid, {
-          [key]: imageUrl,
-        });
+        let result = await this.pcfContext.webAPI.updateRecord(
+          node.EntityType,
+          node.Guid,
+          {
+            [key]: imageUrl,
+          }
+        );
       } catch (err: any) {
         throw new Error(err.message);
       }
