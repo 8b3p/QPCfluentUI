@@ -39,7 +39,7 @@ const App = (props: props) => {
     Stack: {
       width: "100%",
       display: "flex",
-      height: `calc(${vm.controlHeight as number}px - 1%)`,
+      height: `calc(${vm.controlHeight as number}px - 0.5em)`,
       justifyContent: "space-around",
       alignItems: "flex-start",
       border: "1px solid #eeeeee",
