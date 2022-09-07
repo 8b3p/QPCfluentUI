@@ -13,7 +13,7 @@ export default class QPCcontrolVM {
     const value = this.getCurrentNode(this.items);
     return value ? value : ({} as RenderTree);
   }
-  public set currentNode(value) {
+  public set currentNode(value: RenderTree) {
     this._currentNode = value.Guid;
   }
   pcfContext = {} as ComponentFramework.Context<IInputs>;
@@ -37,11 +37,14 @@ export default class QPCcontrolVM {
     return this.DisplayQuoteLineDev ? "Block" : "None";
   }
   public get ComputedDesc() {
+    console.log(this.currentNode.desc);
     return this.currentNode.desc
       ? this.currentNode.desc
-          .replace("<br/>", "\n")
-          .replace(/<\/?[^]+(>|$)/g, "")
-      : "";
+          .split("<br/>")
+          .join("\n")
+          .replace(/(<([^>]+)>)/gi, " ")
+      : // .replace(/<\/?[^]+(>|$)/g, "") //* This is the old expression, will leave here for reference
+        "";
   }
 
   constructor(
@@ -237,7 +240,9 @@ export default class QPCcontrolVM {
                 groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_notes"] ==
                 undefined
                   ? ""
-                  : groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_notes"],
+                  : groupedbyHeader[QuoteLineID[i]][0][
+                      "QuoteDetail.crf08_notes"
+                    ],
               Guid: groupedbyHeader[QuoteLineID[i]][0][
                 "QuoteDetail.quotedetailid"
               ],
@@ -247,13 +252,19 @@ export default class QPCcontrolVM {
               RTPrintPhotos: false,
               RTPrintNote: false,
               RTPrintPrice:
-                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_printprice"],
+                groupedbyHeader[QuoteLineID[i]][0][
+                  "QuoteDetail.crf08_printprice"
+                ],
               RTExcludeFromPrint: false,
               PhotoURL: [
-                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url"] || "",
-                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url2"] || "",
-                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url3"] || "",
-                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url4"] || "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url"] ||
+                  "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url2"] ||
+                  "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url3"] ||
+                  "",
+                groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url4"] ||
+                  "",
               ],
             });
           }
