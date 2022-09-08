@@ -37,7 +37,6 @@ export default class QPCcontrolVM {
     return this.DisplayQuoteLineDev ? "Block" : "None";
   }
   public get ComputedDesc() {
-    console.log(this.currentNode.desc);
     return this.currentNode.desc
       ? this.currentNode.desc
           .split("<br/>")

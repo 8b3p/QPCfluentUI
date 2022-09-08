@@ -50,6 +50,7 @@ const App = (props: props) => {
       height: "95%",
       margin: "1em",
       overflowY: "scroll",
+      overflowX: "hidden",
     },
   });
 

@@ -10,14 +10,17 @@ interface props {
 
 const QuoteImage = (props: props) => {
   const vm = useServiceProvider();
-  const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [urlIsValid, setUrlIsValid] = useState(false);
 
   useEffect(() => {
+    setUrlIsValid(false);
     setImageUrl(
       vm.currentNode.PhotoURL ? vm.currentNode.PhotoURL[props.ImageNumber] : ""
     );
-    setShowImage(true);
+    checkUrlValidity(
+      vm.currentNode.PhotoURL ? vm.currentNode.PhotoURL[props.ImageNumber] : ""
+    );
   }, [vm.currentNode]);
 
   const styles = mergeStyleSets({
@@ -50,11 +53,19 @@ const QuoteImage = (props: props) => {
     e: FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setImageUrl(e.currentTarget.value);
-    vm.imageUrlChangeHandler(e.currentTarget.value, props.ImageNumber).then(
-      () => {
-        setShowImage(true);
-      }
-    );
+    checkUrlValidity(e.currentTarget.value);
+    vm.imageUrlChangeHandler(e.currentTarget.value, props.ImageNumber);
+  };
+
+  const checkUrlValidity = async (url: string) => {
+    var img = new Image();
+    img.src = url;
+    img.onload = (e: Event) => {
+      setUrlIsValid(true);
+    };
+    img.onerror = (e: Event | string) => {
+      setUrlIsValid(false);
+    };
   };
 
   return (
@@ -68,7 +79,7 @@ const QuoteImage = (props: props) => {
           value={imageUrl}
         />
       </div>
-      {showImage && (
+      {urlIsValid && (
         <div className={styles["Card"]}>
           <img
             src={
@@ -77,7 +88,7 @@ const QuoteImage = (props: props) => {
                 : ""
             }
             onError={({ currentTarget }) => {
-              setShowImage(false);
+              setUrlIsValid(false);
               currentTarget.onerror = null; // prevents looping
             }}
             className={styles["css-image-style"]}
