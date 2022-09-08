@@ -16,22 +16,18 @@ interface props {
   currentNode: RenderTree;
   level: number;
   children?: ReactElement<any, string | JSXElementConstructor<any>>[] | null;
+  key: string;
 }
 
 const QuoteTreeItem = (props: props) => {
   const vm = useServiceProvider();
-  let defaultStatus: boolean;
-  if (props.level == 1) {
-    defaultStatus = true;
-  } else {
-    defaultStatus = false;
-  }
-  const [childVisible, setChildvisibility] = useState(defaultStatus);
+  const [isExpanded, setIsExpanded] = useState(props.level === 1 && true);
 
   const styles = mergeStyleSets({
     StackItem: {
       // backgroundColor: "#a0a0a0",
       marginRight: "1em",
+      height: "fit-content",
       padding: "0.3em 1em",
       // paddingLeft: `calc(${defaultPaddingLeft}em + ${level * 2}%)`,
       paddingLeft: `${props.level - 1}em`,
@@ -88,58 +84,72 @@ const QuoteTreeItem = (props: props) => {
   if (props.level == 3) {
   }
 
+  const renderChildren = (
+    nodes: ReactElement<any, string | JSXElementConstructor<any>>[]
+  ) => {
+    return (
+      <div className={isExpanded ? styles.children : styles.notChildren}>
+        {nodes}
+      </div>
+    );
+  };
+
+  const renderIcon = () => {
+    return props.currentNode.children ? (
+      <ChevronRightMedIcon
+        className={
+          isExpanded ? styles.icon + " " + styles.visible : styles.icon
+        }
+      />
+    ) : (
+      <div className={styles.dummyIcon}></div>
+    );
+  };
+
+  const renderCheckBoxes = () => {
+    return (
+      <ConfigTreeCheckBox
+        className={styles["check-boxes"]}
+        currentNode={props.currentNode}
+      />
+    );
+  };
+
+  const renderText = () => {
+    return props.level === 3 ? (
+      <TooltipHost
+        content={props.currentNode.name}
+        delay={TooltipDelay.long}
+        id={props.currentNode.id}
+      >
+        <div className={styles.text}>{props.currentNode.name}</div>
+      </TooltipHost>
+    ) : (
+      <div className={styles.text}>{props.currentNode.name}</div>
+    );
+  };
+
   return (
     <>
       <StackItem
+        className={styles.StackItem}
+        align='auto'
         onClick={() => {
           vm.onTreeItemClickedHandler(props.currentNode);
         }}
-        className={styles.StackItem}
-        align='auto'
       >
         <div
           className={styles.leftSide}
           onClick={() => {
-            setChildvisibility(!childVisible);
+            setIsExpanded(!isExpanded);
           }}
         >
-          {props.currentNode.children ? (
-            <ChevronRightMedIcon
-              // className={`${styles.icon} ${childVisible ? styles.active : ""}`}
-              className={
-                styles.icon + " " + (childVisible ? styles.visible : "")
-              }
-            />
-          ) : (
-            <div className={styles.dummyIcon} />
-          )}
-          {props.level === 3 ? (
-            <TooltipHost
-              content={props.currentNode.name}
-              delay={TooltipDelay.long}
-            >
-              <div className={styles.text}>{props.currentNode.name}</div>
-            </TooltipHost>
-          ) : (
-            <div className={styles.text}>{props.currentNode.name}</div>
-          )}
+          {renderIcon()}
+          {renderText()}
         </div>
-        <ConfigTreeCheckBox
-          className={styles["check-boxes"]}
-          currentNode={props.currentNode}
-        />
+        {renderCheckBoxes()}
       </StackItem>
-      {props.currentNode.children && childVisible && (
-        <div
-          className={
-            props.currentNode.children && childVisible
-              ? styles.children
-              : styles.notChildren
-          }
-        >
-          {props.children}
-        </div>
-      )}
+      {props.children && renderChildren(props.children)}
     </>
   );
 };
