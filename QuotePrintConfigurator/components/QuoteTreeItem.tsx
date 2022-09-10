@@ -38,6 +38,7 @@ const QuoteTreeItem = (props: props) => {
       fontSize: "14px",
     },
     leftSide: {
+      cursor: "pointer",
       display: "flex",
       alignItems: "center",
       maxWidth:
