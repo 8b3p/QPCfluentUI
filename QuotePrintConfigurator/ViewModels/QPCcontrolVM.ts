@@ -4,11 +4,25 @@ import { RenderTree } from "../Functions/RenderTree";
 import { IInputs } from "../generated/ManifestTypes";
 
 export default class QPCcontrolVM {
+  constructor(
+    serviceProvider: ServiceProvider,
+    context: ComponentFramework.Context<IInputs>
+  ) {
+    this.pcfContext = context;
+    this.serviceProvider = serviceProvider;
+    this.controlContext = serviceProvider.get<ControlContextService>(
+      ControlContextService.serviceProviderName
+    );
+    this.updateData();
+    makeAutoObservable(this, {
+      serviceProvider: false,
+      controlContext: false,
+    });
+  }
   serviceProvider = {} as ServiceProvider;
   controlContext = {} as ControlContextService;
   firstLoad = true;
   private _currentNode: string = "";
-  checkboxLoading = false;
   public get currentNode() {
     const value = this.getCurrentNode(this.items);
     return value ? value : ({} as RenderTree);
@@ -46,22 +60,11 @@ export default class QPCcontrolVM {
         "";
   }
 
-  constructor(
-    serviceProvider: ServiceProvider,
-    context: ComponentFramework.Context<IInputs>
-  ) {
-    this.pcfContext = context;
-    this.serviceProvider = serviceProvider;
-    this.controlContext = serviceProvider.get<ControlContextService>(
-      ControlContextService.serviceProviderName
-    );
-    this.updateData();
-    makeAutoObservable(this, {
-      serviceProvider: false,
-      controlContext: false,
-    });
-  }
-
+  /**
+   * A search functoin for the RenderTree object, finds the wanted node by id
+   * @param items
+   * @returns Nothing, sets the currentNode in the ViewModel
+   */
   private getCurrentNode = (items: RenderTree): any => {
     try {
       if (items.Guid == this._currentNode) {
@@ -77,6 +80,13 @@ export default class QPCcontrolVM {
       throw new Error(err.message);
     }
   };
+
+  /**
+   * not quite sure, but it refactors the data provided to it, made by Tim.
+   * @param objectArray
+   * @param property
+   * @returns
+   */
 
   groupByHeader = (objectArray: any[], property: string) => {
     return objectArray.reduce((acc, obj) => {
@@ -100,8 +110,12 @@ export default class QPCcontrolVM {
       : this.items.children?.filter(CurNode => CurNode.Guid === Guid);
   };
 
-  getFetchXml = (QuoteID: string) => {
-    return `?fetchXml=
+  /**
+   * a fetchXml query for fetching the required data for the PCF
+   * @param QuoteID
+   * @returns string
+   */
+  getFetchXml = (QuoteID: string): string => `?fetchXml=
       <fetch>
       <entity name="quote">
         <attribute name="name" />
@@ -141,8 +155,11 @@ export default class QPCcontrolVM {
         </link-entity>
       </entity>
     </fetch>`;
-  };
 
+  /**
+   * a massive function that does a whole lot of refactoring and checking and updates the data in the ViewModel
+   * @returns nothing, updates the data in the ViewModel
+   */
   updateData = () => {
     this.pcfContext.webAPI
       .retrieveMultipleRecords(
@@ -283,9 +300,13 @@ export default class QPCcontrolVM {
       });
   };
 
+  /**
+   * updates the data in the dataverse and the ViewModel
+   * @param checkboxtype
+   * @param node
+   */
   onCheckBoxCheckedHandler = (checkboxtype: string, node: RenderTree) => {
     let currentCheck: boolean;
-    this.checkboxLoading = true;
     if (node != null && node?.EntityType == "nmc_equipmentbuilderline") {
       if (checkboxtype == "Description") {
         currentCheck = !node.RTPrintDescription;
@@ -388,6 +409,10 @@ export default class QPCcontrolVM {
     }
   };
 
+  /**
+   * changes the currendNode in the view model to the node clicked in the tree
+   * @param node the node clicked
+   */
   onTreeItemClickedHandler = (node: RenderTree) => {
     this.currentNode = node;
     this.SalesPersonNote = node.SalesPersonNote;
@@ -396,6 +421,10 @@ export default class QPCcontrolVM {
     this.DisplayQuoteLineDev = node.EntityType == "quotedetail";
   };
 
+  /**
+   * updates the salesPersonNote in the dataverse and the salesPersonNote in the node itself
+   * @param node
+   */
   onSalesPersonNotesBlurredHandler = async (node: RenderTree) => {
     let salesPersonNote = this.SalesPersonNote;
     if (
@@ -419,12 +448,21 @@ export default class QPCcontrolVM {
     }
   };
 
+  /**
+   * updates the "salesPersonNote" in the ViewModel on each key stroke
+   * @param event
+   */
   onSalesPersonNotesChangedHandler = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     this.SalesPersonNote = event.currentTarget.value;
   };
 
+  /**
+   * updates the imageUrl in the dataverse and the ViewModel on each key stroke
+   * @param imageUrl
+   * @param ImageNumber
+   */
   imageUrlChangeHandler = async (imageUrl: string, ImageNumber: number) => {
     let node = this.currentNode;
     // let oldNode = this.currentNode;

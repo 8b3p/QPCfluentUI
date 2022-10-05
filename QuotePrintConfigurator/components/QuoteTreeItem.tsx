@@ -49,7 +49,8 @@ const QuoteTreeItem = (props: props) => {
       display: "flex",
       alignItems: "center",
       maxWidth:
-        props.currentNode.EntityType == "quotedetail" || props.currentNode.EntityType == ""
+        props.currentNode.EntityType == "quotedetail" ||
+        props.currentNode.EntityType == ""
           ? "calc(100% - 2.5em)"
           : "calc(100% - 6.5em)",
       overflow: "hidden",
@@ -202,7 +203,12 @@ const QuoteTreeItem = (props: props) => {
         </div>
         {renderCheckBoxes()}
       </StackItem>
-      {props.children && renderChildrenInBlocks(props.children, 4)}
+
+      {props.children && (
+        <div className={isExpanded ? styles.children : styles.notChildren}>
+          {renderChildrenInBlocks(props.children, 4)}
+        </div>
+      )}
     </>
   );
 };
