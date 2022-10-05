@@ -59,7 +59,7 @@ const App = (props: props) => {
     if (vm.firstLoad) {
       vm.controlHeight = props.controlHeight;
       vm.controlWidth = props.controlWidth;
-      console.log("version 19");
+      console.log("version 20");
     }
 
     return () => {

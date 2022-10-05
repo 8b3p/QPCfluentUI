@@ -119,6 +119,7 @@ const QuoteTreeItem = (props: props) => {
       if (count == numberOfItems) {
         blocks.push(
           <RenderIfVisible
+            key={props.currentNode.id + i}
             defaultHeight={34 * numberOfItems}
             visibleOffset={34 * numberOfItems}
           >
