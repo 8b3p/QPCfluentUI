@@ -11,6 +11,7 @@ import React = require("react");
 import { RenderTree } from "../Functions/RenderTree";
 import ConfigTreeCheckBox from "./ConfigTreeCheckBox";
 import { useServiceProvider } from "./context";
+import RenderIfVisible from "./renderIfVisible";
 
 interface props {
   currentNode: RenderTree;
@@ -18,6 +19,12 @@ interface props {
   children?: ReactElement<any, string | JSXElementConstructor<any>>[] | null;
   key: string;
 }
+
+/**
+ * a single item in the tree, with its children if there is any
+ * @param props
+ * @returns JSX.Element
+ */
 
 const QuoteTreeItem = (props: props) => {
   const vm = useServiceProvider();
@@ -42,8 +49,7 @@ const QuoteTreeItem = (props: props) => {
       display: "flex",
       alignItems: "center",
       maxWidth:
-        props.currentNode.EntityType == "quotedetail" ||
-        props.currentNode.EntityType == ""
+        props.currentNode.EntityType == "quotedetail" || props.currentNode.EntityType == ""
           ? "calc(100% - 2.5em)"
           : "calc(100% - 6.5em)",
       overflow: "hidden",
@@ -82,18 +88,56 @@ const QuoteTreeItem = (props: props) => {
     },
   });
 
-  if (props.level == 3) {
-  }
+  // const renderChildren = (
+  //   nodes: ReactElement<any, string | JSXElementConstructor<any>>[]
+  // ) => {
+  //   return (
+  //     <div className={isExpanded ? styles.children : styles.notChildren}>
+  //       {nodes}
+  //     </div>
+  //   );
+  // };
 
-  const renderChildren = (
-    nodes: ReactElement<any, string | JSXElementConstructor<any>>[]
+  /**
+   * @description this function returns the children in blocks each block contains a number of children and is wrapped in a div and renders only when visible in the viewport
+   * @param children
+   * @param numberOfItems
+   * @returns Array of blocks of children
+   */
+
+  const renderChildrenInBlocks = (
+    children: ReactElement<any, string | JSXElementConstructor<any>>[],
+    numberOfItems: number
   ) => {
-    return (
-      <div className={isExpanded ? styles.children : styles.notChildren}>
-        {nodes}
-      </div>
-    );
+    let block: ReactElement<any, string | JSXElementConstructor<any>>[] = [];
+    let blocks = [];
+    let count = 0;
+    for (let i = 0; i < children.length; i++) {
+      block.push(children[i]);
+      count++;
+      if (count == numberOfItems) {
+        blocks.push(
+          <RenderIfVisible
+            defaultHeight={34 * numberOfItems}
+            visibleOffset={34 * numberOfItems}
+          >
+            {block}
+          </RenderIfVisible>
+        );
+        block = [];
+        count = 0;
+      }
+    }
+    if (block.length > 0) {
+      blocks.push(block);
+    }
+    return blocks;
   };
+
+  /**
+   * this function renders the icon for the tree item, and if there's no item it renders a dummy icon to take its place.
+   *
+   */
 
   const renderIcon = () => {
     return props.currentNode.children ? (
@@ -107,6 +151,10 @@ const QuoteTreeItem = (props: props) => {
     );
   };
 
+  /**
+   * just renders the checkboxes cmon
+   */
+
   const renderCheckBoxes = () => {
     return (
       <ConfigTreeCheckBox
@@ -115,6 +163,10 @@ const QuoteTreeItem = (props: props) => {
       />
     );
   };
+
+  /**
+   * renders the text of the tree item
+   */
 
   const renderText = () => {
     return props.level === 3 ? (
@@ -150,7 +202,7 @@ const QuoteTreeItem = (props: props) => {
         </div>
         {renderCheckBoxes()}
       </StackItem>
-      {props.children && renderChildren(props.children)}
+      {props.children && renderChildrenInBlocks(props.children, 4)}
     </>
   );
 };

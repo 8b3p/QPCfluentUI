@@ -296,7 +296,8 @@ export default class QPCcontrolVM {
           })
           .then(response => {
             node.RTPrintDescription = currentCheck;
-            this.currentNode = node;
+            // this.currentNode = node;
+            this.items = this.items;
           })
           .catch(err => {
             throw new Error(err.message);
@@ -311,7 +312,8 @@ export default class QPCcontrolVM {
           })
           .then(response => {
             node.RTPrintPhotos = currentCheck;
-            this.currentNode = node;
+            this.items = this.items;
+            // this.currentNode = node
           })
           .catch(err => {
             throw new Error(err.message);
@@ -326,7 +328,8 @@ export default class QPCcontrolVM {
           })
           .then(response => {
             node.RTPrintNote = currentCheck;
-            this.currentNode = node;
+            // this.currentNode = node;
+            this.items = this.items;
           })
           .catch(err => {
             throw new Error(err.message);
@@ -341,7 +344,8 @@ export default class QPCcontrolVM {
           })
           .then(response => {
             node.RTPrintPrice = currentCheck;
-            this.currentNode = node;
+            // this.currentNode = node;
+            this.items = this.items;
           })
           .catch(err => {
             throw new Error(err.message);
@@ -355,7 +359,8 @@ export default class QPCcontrolVM {
           })
           .then(response => {
             node.RTExcludeFromPrint = currentCheck;
-            this.currentNode = node;
+            // this.currentNode = node;
+            this.items = this.items;
           })
           .catch(err => {
             throw new Error(err.message);
@@ -373,7 +378,8 @@ export default class QPCcontrolVM {
           })
           .then(() => {
             node.RTPrintPrice = currentCheck;
-            this.currentNode = node;
+            // this.currentNode = node;
+            this.items = this.items;
           })
           .catch(err => {
             throw new Error(err.message);
@@ -390,7 +396,8 @@ export default class QPCcontrolVM {
     this.DisplayQuoteLineDev = node.EntityType == "quotedetail";
   };
 
-  onSalesPersonNotesBlurredHandler = (node: RenderTree) => {
+  onSalesPersonNotesBlurredHandler = async (node: RenderTree) => {
+    let salesPersonNote = this.SalesPersonNote;
     if (
       node != null &&
       (node.EntityType == "nmc_equipmentbuilderline" ||
@@ -400,17 +407,15 @@ export default class QPCcontrolVM {
         node.EntityType == "nmc_equipmentbuilderline"
           ? "crf08_salespersonnote"
           : "crf08_notes";
-      this.pcfContext.webAPI
-        .updateRecord(node.EntityType, node.Guid, {
-          [key]: this.SalesPersonNote,
-        })
-        .then(() => {
-          node.SalesPersonNote = this.SalesPersonNote;
-          this.items = this.items;
-        })
-        .catch(err => {
-          throw new Error(err.message);
+      try {
+        await this.pcfContext.webAPI.updateRecord(node.EntityType, node.Guid, {
+          [key]: salesPersonNote,
         });
+        node.SalesPersonNote = salesPersonNote;
+        this.items = this.items;
+      } catch (err: any) {
+        throw new Error(err.message);
+      }
     }
   };
 
@@ -422,6 +427,7 @@ export default class QPCcontrolVM {
 
   imageUrlChangeHandler = async (imageUrl: string, ImageNumber: number) => {
     let node = this.currentNode;
+    // let oldNode = this.currentNode;
 
     if (
       node != null &&
@@ -451,6 +457,7 @@ export default class QPCcontrolVM {
           }
         );
       } catch (err: any) {
+        // this.currentNode = oldNode;
         throw new Error(err.message);
       }
     }
