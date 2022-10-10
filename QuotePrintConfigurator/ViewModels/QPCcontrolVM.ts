@@ -21,6 +21,7 @@ export default class QPCcontrolVM {
   }
   serviceProvider = {} as ServiceProvider;
   controlContext = {} as ControlContextService;
+  treeExpansionState = new Map<string, boolean>();
   firstLoad = true;
   private _currentNode: string = "";
   public get currentNode() {

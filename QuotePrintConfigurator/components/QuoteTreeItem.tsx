@@ -28,7 +28,13 @@ interface props {
 
 const QuoteTreeItem = (props: props) => {
   const vm = useServiceProvider();
-  const [isExpanded, setIsExpanded] = useState(props.level === 1 && true);
+  // const [isExpanded, setIsExpanded] = useState(props.level === 1 && true);
+
+  React.useEffect(() => {
+    if (props.level === 1) {
+      vm.treeExpansionState.set(props.currentNode.id, true);
+    }
+  }, []);
 
   const styles = mergeStyleSets({
     StackItem: {
@@ -145,7 +151,9 @@ const QuoteTreeItem = (props: props) => {
     return props.currentNode.children ? (
       <ChevronRightMedIcon
         className={
-          isExpanded ? styles.icon + " " + styles.visible : styles.icon
+          vm.treeExpansionState.get(props.currentNode.id)
+            ? styles.icon + " " + styles.visible
+            : styles.icon
         }
       />
     ) : (
@@ -196,7 +204,10 @@ const QuoteTreeItem = (props: props) => {
         <div
           className={styles.leftSide}
           onClick={() => {
-            setIsExpanded(!isExpanded);
+            vm.treeExpansionState.set(
+              props.currentNode.id,
+              !vm.treeExpansionState.get(props.currentNode.id)
+            );
           }}
         >
           {renderIcon()}
@@ -206,7 +217,13 @@ const QuoteTreeItem = (props: props) => {
       </StackItem>
 
       {props.children && (
-        <div className={isExpanded ? styles.children : styles.notChildren}>
+        <div
+          className={
+            vm.treeExpansionState.get(props.currentNode.id)
+              ? styles.children
+              : styles.notChildren
+          }
+        >
           {renderChildrenInBlocks(props.children, 4)}
         </div>
       )}
