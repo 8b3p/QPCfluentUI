@@ -65,7 +65,7 @@ const App = (props: props) => {
     if (vm.firstLoad) {
       vm.controlHeight = props.controlHeight;
       vm.controlWidth = props.controlWidth;
-      console.log("version 20");
+      console.log("version 22");
     }
     //!this is very bad and has to done in another way but
     //!i could not find a way to do it so here we are!
