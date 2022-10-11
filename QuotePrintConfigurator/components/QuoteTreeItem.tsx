@@ -39,9 +39,9 @@ const QuoteTreeItem = (props: props) => {
   const styles = mergeStyleSets({
     StackItem: {
       // backgroundColor: "#a0a0a0",
-      marginRight: "1em",
       height: "fit-content",
       padding: "0.3em 1em",
+      paddingRight: "0.3em",
       // paddingLeft: `calc(${defaultPaddingLeft}em + ${level * 2}%)`,
       paddingLeft: `${props.level - 1}em`,
       display: "flex",

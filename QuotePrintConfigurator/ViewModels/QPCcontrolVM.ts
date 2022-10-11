@@ -57,8 +57,8 @@ export default class QPCcontrolVM {
           .split("<br/>")
           .join("\n")
           .replace(/(<([^>]+)>)/gi, " ")
-      : // .replace(/<\/?[^]+(>|$)/g, "") //* This is the old expression, will leave here for reference
-        "";
+      : "";
+    // .replace(/<\/?[^]+(>|$)/g, "") //* This is the old expression, will leave here for reference
   }
 
   /**

@@ -14,14 +14,20 @@ const QuoteImageList = (props: props) => {
       display: vm.displaySalesPerson,
     },
     "css-row": {
-      // marginBottom: "2%",
       width: "100%",
       display: "flex",
       justifyContent: "center",
+      flexWrap: "wrap",
+    },
+    box: {
+      minWidth: "300px",
+      display: "flex",
+      justifyContent: "center",
+      flex: "1 1 50%",
     },
   });
 
-  const renderImages = (NofImages: number, from: number) => {
+  const renderNumberOfImages = (NofImages: number, from: number) => {
     let ImageList: JSX.Element[] = [];
     for (let i = 0; i < NofImages; i++) {
       ImageList.push(<QuoteImage key={from} ImageNumber={from} />);
@@ -29,11 +35,33 @@ const QuoteImageList = (props: props) => {
     }
     return ImageList;
   };
+  const renderImages = (NofImages: number) => {
+    let ImageList: JSX.Element[] = [];
+    let from = 0;
+    while (NofImages > 0) {
+      if (NofImages > 2) {
+        ImageList.push(
+          <div key={from} className={styles["box"]}>
+            {renderNumberOfImages(2, from)}
+          </div>
+        );
+        NofImages -= 2;
+        from += 2;
+      } else {
+        ImageList.push(
+          <div key={from} className={styles["box"]}>
+            {renderNumberOfImages(NofImages, from)}
+          </div>
+        );
+        NofImages = 0;
+      }
+    }
+    return ImageList;
+  };
 
   return (
     <div className={styles["image-list"]}>
-      <div className={styles["css-row"]}>{renderImages(2, 0)}</div>
-      <div className={styles["css-row"]}>{renderImages(2, 2)}</div>
+      <div className={styles["css-row"]}>{renderImages(4)}</div>
     </div>
   );
 };

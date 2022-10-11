@@ -24,9 +24,9 @@ const QuoteImage = (props: props) => {
   }, [vm.currentNode]);
 
   const styles = mergeStyleSets({
-    "css-column": {
+    "image-container": {
       margin: "1%",
-      width: "50%",
+      width: "48%",
     },
     "css-url-save-button": {
       position: "relative",
@@ -69,16 +69,14 @@ const QuoteImage = (props: props) => {
   };
 
   return (
-    <div className={styles["css-column"]}>
-      <div className={styles["css-url-save-button"]}>
-        <TextField
-          className={styles["text-field"]}
-          underlined
-          onChange={imageUrlChangeHandler}
-          placeholder='Image URL'
-          value={imageUrl}
-        />
-      </div>
+    <div className={styles["image-container"]}>
+      <TextField
+        className={styles["text-field"]}
+        underlined
+        onChange={imageUrlChangeHandler}
+        placeholder='Image URL'
+        value={imageUrl}
+      />
       {urlIsValid && (
         <div className={styles["Card"]}>
           <img

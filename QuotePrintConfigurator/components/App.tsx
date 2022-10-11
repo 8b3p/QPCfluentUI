@@ -45,12 +45,18 @@ const App = (props: props) => {
       border: "1px solid #eeeeee",
     },
     StackItem: {
-      width: "50%",
+      width: "100%",
       // height: `${(vm.controlHeight as number) - 40}px`,
       height: "95%",
       margin: "1em",
       overflowY: "scroll",
       overflowX: "hidden",
+    },
+    "resizable-panel": {
+      resize: "horizontal",
+    },
+    noScroll: {
+      overflow: "hidden !important",
     },
   });
 
@@ -61,11 +67,19 @@ const App = (props: props) => {
       vm.controlWidth = props.controlWidth;
       console.log("version 20");
     }
+    //!this is very bad and has to done in another way but
+    //!i could not find a way to do it so here we are!
+    document.getElementById("id-184")?.classList.add(styles.noScroll);
+    document.getElementById("id-181")?.classList.add(styles.noScroll);
 
     return () => {
       vm.pcfContext.parameters.sampleDataSet.refresh();
     };
   }, []);
+
+  useEffect(() => {
+    vm.controlWidth = props.controlWidth;
+  }, [props.controlWidth]);
 
   if (!vm.isLoaded) {
     return (
@@ -84,7 +98,7 @@ const App = (props: props) => {
     return (
       <ContextProvider value={vm}>
         <div id='wrapper' className={styles.Stack}>
-          <div className={styles.StackItem}>
+          <div className={styles.StackItem + " " + styles["resizable-panel"]}>
             <QuoteTree />
           </div>
           <div className={styles.StackItem}>
