@@ -52,9 +52,6 @@ const App = (props: props) => {
       overflowY: "scroll",
       overflowX: "hidden",
     },
-    "resizable-panel": {
-      resize: "horizontal",
-    },
     noScroll: {
       overflow: "hidden !important",
     },
@@ -98,7 +95,7 @@ const App = (props: props) => {
     return (
       <ContextProvider value={vm}>
         <div id='wrapper' className={styles.Stack}>
-          <div className={styles.StackItem + " " + styles["resizable-panel"]}>
+          <div className={styles.StackItem}>
             <QuoteTree />
           </div>
           <div className={styles.StackItem}>
