@@ -444,8 +444,29 @@ export default class QPCcontrolVM {
         node.SalesPersonNote = salesPersonNote;
         this.items = this.items;
       } catch (err: any) {
+        console.dir(err.message);
         throw new Error(err.message);
       }
+    }
+  };
+
+  /**
+   * makes the parent "quote" record editable by changing the statecode field to 0 instead of 1, so the regular user can edit the underlying records.
+   */
+  makeQuoteStatecodeToZero = async () => {
+    //* the statecode of the quote is set to 0 when the salespersonnote is changed
+    //* this is a workaround for the parent table being read-only
+    //! i dont have the GUID of the quote record
+    // TODO i need to get the id of the parent "quote" record
+    // TODO and then update the statecode to 0
+    try {
+      console.log(this.items.EntityType + " " + this.items.Guid);
+      await this.pcfContext.webAPI.updateRecord("quote", this.items.Guid, {
+        statecode: 0,
+      });
+    } catch (err: any) {
+      console.log("error accurd");
+      console.dir(err);
     }
   };
 
