@@ -40,10 +40,9 @@ const QuoteTreeItem = (props: props) => {
     StackItem: {
       // backgroundColor: "#a0a0a0",
       height: "fit-content",
-      padding: "0.3em 1em",
-      paddingRight: "0.3em",
+      padding: "0.3em",
       // paddingLeft: `calc(${defaultPaddingLeft}em + ${level * 2}%)`,
-      paddingLeft: `${props.level - 1}em`,
+      marginLeft: `${props.level - 1.3}em`,
       display: "flex",
       justifyContent: "space-between",
     },
@@ -92,6 +91,9 @@ const QuoteTreeItem = (props: props) => {
     dummyIcon: {
       minWidth: "28px",
       height: "10px",
+    },
+    Selected: {
+      backgroundColor: "#e0e0e0",
     },
   });
 
@@ -192,10 +194,15 @@ const QuoteTreeItem = (props: props) => {
     );
   };
 
+  let StackItemClasses =
+    props.currentNode.Guid === vm.currentNode.Guid
+      ? styles.StackItem + " " + styles.Selected
+      : styles.StackItem;
+
   return (
     <>
       <StackItem
-        className={styles.StackItem}
+        className={StackItemClasses}
         align='auto'
         onClick={() => {
           vm.onTreeItemClickedHandler(props.currentNode);
