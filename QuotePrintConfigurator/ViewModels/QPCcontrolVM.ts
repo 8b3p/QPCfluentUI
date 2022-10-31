@@ -456,13 +456,10 @@ export default class QPCcontrolVM {
    * 0 = editable, 1 = readonly
    */
   changeQuoteStatecode = async (statecode: number) => {
-    //* the statecode of the quote is set to 0 when the salespersonnote is changed
     //* this is a workaround for the parent table being read-only
-    //! i dont have the GUID of the quote record --------- FIXED
+    //! i dont have the GUID of the quote record --------- FIXED, Xrm.Page.data.entity.getId() returns the GUID
     //// TO DO i need to get the id of the parent "quote" record
-    //* the id of the quote record is retrieved by calling Xrm.Page.data.entity.getId()
-    //// TO DO and then update the statecode to 0
-    //* done
+    //* Xrm.Page.data.entity.getId() returns the GUID of the current quote record
 
     // TODO this works now, i need to implement in the code
     try {
