@@ -451,19 +451,29 @@ export default class QPCcontrolVM {
   };
 
   /**
-   * makes the parent "quote" record editable by changing the statecode field to 0 instead of 1, so the regular user can edit the underlying records.
+   * changes the statecode field in the quote record, this field makes it editable or readonly record.
+   * @param statecode: number
+   * 0 = editable, 1 = readonly
    */
-  makeQuoteStatecodeToZero = async () => {
+  changeQuoteStatecode = async (statecode: number) => {
     //* the statecode of the quote is set to 0 when the salespersonnote is changed
     //* this is a workaround for the parent table being read-only
-    //! i dont have the GUID of the quote record
-    // TODO i need to get the id of the parent "quote" record
-    // TODO and then update the statecode to 0
+    //! i dont have the GUID of the quote record --------- FIXED
+    //// TO DO i need to get the id of the parent "quote" record
+    //* the id of the quote record is retrieved by calling Xrm.Page.data.entity.getId()
+    //// TO DO and then update the statecode to 0
+    //* done
+
+    // TODO this works now, i need to implement in the code
     try {
-      console.log(this.items.EntityType + " " + this.items.Guid);
-      await this.pcfContext.webAPI.updateRecord("quote", this.items.Guid, {
-        statecode: 0,
-      });
+      console.log(Xrm.Page.data.entity.getEntityName());
+      await this.pcfContext.webAPI.updateRecord(
+        "quote",
+        Xrm.Page.data.entity.getId(),
+        {
+          statecode: statecode,
+        }
+      );
     } catch (err: any) {
       console.log("error accurd");
       console.dir(err);
