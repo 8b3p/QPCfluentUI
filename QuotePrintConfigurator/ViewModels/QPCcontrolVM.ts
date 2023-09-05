@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { ControlContextService, ServiceProvider } from "pcf-react";
-import { RenderTree } from "../Functions/RenderTree";
+import { RenderTree } from "../types/RenderTree";
 import { IInputs } from "../generated/ManifestTypes";
 
 export default class QPCcontrolVM {
@@ -54,9 +54,9 @@ export default class QPCcontrolVM {
   public get ComputedDesc() {
     return this.currentNode.desc
       ? this.currentNode.desc
-          .split("<br/>")
-          .join("\n")
-          .replace(/(<([^>]+)>)/gi, " ")
+        .split("<br/>")
+        .join("\n")
+        .replace(/(<([^>]+)>)/gi, " ")
       : "";
     // .replace(/<\/?[^]+(>|$)/g, "") //* This is the old expression, will leave here for reference
   }
@@ -211,18 +211,18 @@ export default class QPCcontrolVM {
                     : currentChild["EquipmentBuilderLine.crf08_axnote"],
                 SalesPersonNote:
                   currentChild["EquipmentBuilderLine.crf08_salespersonnote"] ==
-                  undefined
+                    undefined
                     ? ""
                     : currentChild[
-                        "EquipmentBuilderLine.crf08_salespersonnote"
-                      ],
+                    "EquipmentBuilderLine.crf08_salespersonnote"
+                    ],
                 Guid: currentChild[
                   "EquipmentBuilderLine.nmc_equipmentbuilderlineid"
                 ],
                 EntityType: "nmc_equipmentbuilderline",
                 RTPrintDescription:
                   currentChild[
-                    "EquipmentBuilderLine.crf08_includeddescription"
+                  "EquipmentBuilderLine.crf08_includeddescription"
                   ],
                 RTPrintPhotos:
                   currentChild["EquipmentBuilderLine.crf08_includedphotos"],
@@ -255,11 +255,11 @@ export default class QPCcontrolVM {
               desc: "",
               SalesPersonNote:
                 groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_notes"] ==
-                undefined
+                  undefined
                   ? ""
                   : groupedbyHeader[QuoteLineID[i]][0][
-                      "QuoteDetail.crf08_notes"
-                    ],
+                  "QuoteDetail.crf08_notes"
+                  ],
               Guid: groupedbyHeader[QuoteLineID[i]][0][
                 "QuoteDetail.quotedetailid"
               ],
@@ -270,18 +270,18 @@ export default class QPCcontrolVM {
               RTPrintNote: false,
               RTPrintPrice:
                 groupedbyHeader[QuoteLineID[i]][0][
-                  "QuoteDetail.crf08_printprice"
+                "QuoteDetail.crf08_printprice"
                 ],
               RTExcludeFromPrint: false,
               PhotoURL: [
                 groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url"] ||
-                  "",
+                "",
                 groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url2"] ||
-                  "",
+                "",
                 groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url3"] ||
-                  "",
+                "",
                 groupedbyHeader[QuoteLineID[i]][0]["QuoteDetail.crf08_url4"] ||
-                  "",
+                "",
               ],
             });
           }
@@ -508,8 +508,8 @@ export default class QPCcontrolVM {
         node.EntityType == "nmc_equipmentbuilderline"
           ? `crf08_url${ImageNumber + 1}`
           : ImageNumber === 0
-          ? "crf08_url"
-          : `crf08_url${ImageNumber + 1}`;
+            ? "crf08_url"
+            : `crf08_url${ImageNumber + 1}`;
 
       CurrentUrl = imageUrl;
       node.PhotoURL[ImageNumber] = CurrentUrl;

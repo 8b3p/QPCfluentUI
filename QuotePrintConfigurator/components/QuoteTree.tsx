@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
 import React = require("react");
-import { RenderTree } from "../Functions/RenderTree";
+import { RenderTree } from "../types/RenderTree";
 import { useServiceProvider } from "./context";
 import QuoteTreeItem from "./QuoteTreeItem";
 
-interface props {}
+interface props { }
 
 const QuoteTree = (props: props) => {
   const vm = useServiceProvider();

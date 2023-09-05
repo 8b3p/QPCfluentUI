@@ -8,7 +8,7 @@ import { ChevronRightMedIcon } from "@fluentui/react-icons-mdl2";
 import { observer } from "mobx-react-lite";
 import { JSXElementConstructor, ReactElement, useState } from "react";
 import React = require("react");
-import { RenderTree } from "../Functions/RenderTree";
+import { RenderTree } from "../types/RenderTree";
 import ConfigTreeCheckBox from "./ConfigTreeCheckBox";
 import { useServiceProvider } from "./context";
 import RenderIfVisible from "./renderIfVisible";
@@ -53,7 +53,7 @@ const QuoteTreeItem = (props: props) => {
       alignItems: "center",
       maxWidth:
         props.currentNode.EntityType == "quotedetail" ||
-        props.currentNode.EntityType == ""
+          props.currentNode.EntityType == ""
           ? "calc(100% - 2.5em)"
           : "calc(100% - 6.5em)",
       overflow: "hidden",
