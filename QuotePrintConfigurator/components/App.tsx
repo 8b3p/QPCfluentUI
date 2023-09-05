@@ -62,13 +62,11 @@ const App = (props: props) => {
     if (vm.firstLoad) {
       vm.controlHeight = props.controlHeight;
       vm.controlWidth = props.controlWidth;
-      console.log("version 23");
     }
     //!this is very bad and has to done in another way but
     //!i could not find a way to do it so here we are!
     document.getElementById("id-184")?.classList.add(styles.noScroll);
     document.getElementById("id-181")?.classList.add(styles.noScroll);
-
     return () => {
       vm.pcfContext.parameters.sampleDataSet.refresh();
     };

@@ -11,7 +11,7 @@ export class QuotePrintConfigurator extends StandardControlReact<
 > {
   constructor() {
     super();
-    console.log("constructor starts");
+    console.log("version 20");
     this.renderOnParametersChanged = false;
     this.initServiceProvider = serviceProvider => {
       serviceProvider.register(

@@ -3,7 +3,38 @@ import { ControlContextService, ServiceProvider } from "pcf-react";
 import { RenderTree } from "../types/RenderTree";
 import { IInputs } from "../generated/ManifestTypes";
 
+export enum CheckboxType {
+  Description,
+  Photos,
+  Note,
+  Price,
+  ExcludeFromPrint,
+  ExcludeFromPrintParent,
+}
+
 export default class QPCcontrolVM {
+  public serviceProvider = {} as ServiceProvider;
+  public controlContext = {} as ControlContextService;
+  public treeExpansionState = new Map<string, boolean>();
+  public firstLoad = true;
+  private _currentNode: string = "";
+  public get currentNode() {
+    const value = this.getCurrentNode(this.items);
+    return value ? value : ({} as RenderTree);
+  }
+  public set currentNode(value: RenderTree) {
+    this._currentNode = value.Guid;
+  }
+  public pcfContext = {} as ComponentFramework.Context<IInputs>;
+  public isLoaded = false;
+  public isThereData = false;
+  public controlWidth: number | undefined = 0;
+  public controlHeight: number | undefined = 0;
+  public items = {} as RenderTree;
+  public SalesPersonNote = "";
+  public DisplayEquipmentLineDev = false;
+  public DisplayQuoteLineDev = false;
+
   constructor(
     serviceProvider: ServiceProvider,
     context: ComponentFramework.Context<IInputs>
@@ -19,27 +50,7 @@ export default class QPCcontrolVM {
       controlContext: false,
     });
   }
-  serviceProvider = {} as ServiceProvider;
-  controlContext = {} as ControlContextService;
-  treeExpansionState = new Map<string, boolean>();
-  firstLoad = true;
-  private _currentNode: string = "";
-  public get currentNode() {
-    const value = this.getCurrentNode(this.items);
-    return value ? value : ({} as RenderTree);
-  }
-  public set currentNode(value: RenderTree) {
-    this._currentNode = value.Guid;
-  }
-  pcfContext = {} as ComponentFramework.Context<IInputs>;
-  isLoaded = false;
-  isThereData = false;
-  controlWidth: number | undefined = 0;
-  controlHeight: number | undefined = 0;
-  items = {} as RenderTree;
-  SalesPersonNote = "";
-  DisplayEquipmentLineDev = false;
-  DisplayQuoteLineDev = false;
+
   public get displaySalesPerson() {
     return this.DisplayEquipmentLineDev || this.DisplayQuoteLineDev
       ? "block"
@@ -88,19 +99,14 @@ export default class QPCcontrolVM {
    * @param property
    * @returns
    */
-
   groupByHeader = (objectArray: any[], property: string) => {
     return objectArray.reduce((acc, obj) => {
       const key = obj[property];
-
       if (!acc[key]) {
         acc[key] = [];
       }
-
       // Add object to list for given key's value
-
       acc[key].push(obj);
-
       return acc;
     }, {});
   };
@@ -131,6 +137,7 @@ export default class QPCcontrolVM {
           <attribute name="quotedetailid" />
           <attribute name="crf08_notes" />
           <attribute name="crf08_printprice" />
+          <attribute name="axa_excludefromprint" />
           <attribute name="quoteid" />
           <attribute name="crf08_url" />
           <attribute name="crf08_url2" />
@@ -175,7 +182,6 @@ export default class QPCcontrolVM {
           throw new Error(err);
         }
         let QuoteLineName = Object.keys(groupedQuote)[0];
-
         let treeArray: RenderTree = {
           id: "0",
           name: "No Quote Lines",
@@ -190,6 +196,7 @@ export default class QPCcontrolVM {
           RTPrintNote: false,
           RTPrintPrice: false,
           RTExcludeFromPrint: false,
+          RTExcludeFromPrintParent: false,
         };
         if (QuoteLineName !== undefined) {
           treeArray["name"] = QuoteLineName;
@@ -199,7 +206,7 @@ export default class QPCcontrolVM {
           );
           let QuoteLineID: string[] = Object.keys(groupedbyHeader);
           for (let i = 0; i < QuoteLineID.length; i++) {
-            let Child = [];
+            let Child: RenderTree[] = [];
             for (let j = 0; j < groupedbyHeader[QuoteLineID[i]].length; j++) {
               let currentChild = groupedbyHeader[QuoteLineID[i]][j];
               Child.push({
@@ -228,8 +235,8 @@ export default class QPCcontrolVM {
                   currentChild["EquipmentBuilderLine.crf08_includedphotos"],
                 RTPrintNote:
                   currentChild["EquipmentBuilderLine.crf08_includednote"],
-                RTPrintPrice:
-                  currentChild["EquipmentBuilderLine.crf08_printprice"],
+                RTExcludeFromPrintParent: false,
+                RTPrintPrice: false,
                 RTExcludeFromPrint:
                   currentChild["EquipmentBuilderLine.crf08_excludefromprint"],
                 PhotoURL: [
@@ -264,10 +271,13 @@ export default class QPCcontrolVM {
                 "QuoteDetail.quotedetailid"
               ],
               EntityType: "quotedetail",
-
               RTPrintDescription: false,
               RTPrintPhotos: false,
               RTPrintNote: false,
+              RTExcludeFromPrintParent:
+                groupedbyHeader[QuoteLineID[i]][0][
+                "QuoteDetail.axa_excludefromprint"
+                ],
               RTPrintPrice:
                 groupedbyHeader[QuoteLineID[i]][0][
                 "QuoteDetail.crf08_printprice"
@@ -287,7 +297,6 @@ export default class QPCcontrolVM {
           }
         }
         // ServiceProvider.onFetchData(true, QuotationID !== undefined, treeArray);
-
         this.items = treeArray;
         this.isLoaded = true;
         this.isThereData = QuoteLineName !== undefined;
@@ -306,12 +315,11 @@ export default class QPCcontrolVM {
    * @param checkboxtype
    * @param node
    */
-  onCheckBoxCheckedHandler = (checkboxtype: string, node: RenderTree) => {
+  onCheckBoxCheckedHandler = (checkboxtype: CheckboxType, node: RenderTree) => {
     let currentCheck: boolean;
     if (node != null && node?.EntityType == "nmc_equipmentbuilderline") {
-      if (checkboxtype == "Description") {
+      if (checkboxtype == CheckboxType.Description) {
         currentCheck = !node.RTPrintDescription;
-
         this.pcfContext.webAPI
           .updateRecord(node.EntityType, node.Guid, {
             crf08_includeddescription: currentCheck,
@@ -325,8 +333,7 @@ export default class QPCcontrolVM {
             throw new Error(err.message);
           });
       }
-
-      if (checkboxtype == "Photos") {
+      if (checkboxtype == CheckboxType.Photos) {
         currentCheck = !node.RTPrintPhotos;
         this.pcfContext.webAPI
           .updateRecord(node?.EntityType, node.Guid, {
@@ -341,8 +348,7 @@ export default class QPCcontrolVM {
             throw new Error(err.message);
           });
       }
-
-      if (checkboxtype == "Note") {
+      if (checkboxtype == CheckboxType.Note) {
         currentCheck = !node.RTPrintNote;
         this.pcfContext.webAPI
           .updateRecord(node?.EntityType, node.Guid, {
@@ -357,23 +363,7 @@ export default class QPCcontrolVM {
             throw new Error(err.message);
           });
       }
-
-      if (checkboxtype == "Price") {
-        currentCheck = !node.RTPrintPrice;
-        this.pcfContext.webAPI
-          .updateRecord(node?.EntityType, node.Guid, {
-            crf08_printprice: currentCheck,
-          })
-          .then(response => {
-            node.RTPrintPrice = currentCheck;
-            // this.currentNode = node;
-            this.items = this.items;
-          })
-          .catch(err => {
-            throw new Error(err.message);
-          });
-      }
-      if (checkboxtype == "ExcludeFromPrint") {
+      if (checkboxtype == CheckboxType.ExcludeFromPrint) {
         currentCheck = !node.RTExcludeFromPrint;
         this.pcfContext.webAPI
           .updateRecord(node?.EntityType, node.Guid, {
@@ -389,17 +379,30 @@ export default class QPCcontrolVM {
           });
       }
     }
-
     if (node != null && node.EntityType == "quotedetail") {
-      if (checkboxtype == "Price") {
+      if (checkboxtype == CheckboxType.Price) {
         currentCheck = !node.RTPrintPrice;
-
         this.pcfContext.webAPI
           .updateRecord(node?.EntityType, node.Guid, {
             crf08_printprice: currentCheck,
           })
           .then(() => {
             node.RTPrintPrice = currentCheck;
+            // this.currentNode = node;
+            this.items = this.items;
+          })
+          .catch(err => {
+            throw new Error(err.message);
+          });
+      }
+      if (checkboxtype == CheckboxType.ExcludeFromPrintParent) {
+        currentCheck = !node.RTExcludeFromPrintParent;
+        this.pcfContext.webAPI
+          .updateRecord(node?.EntityType, node.Guid, {
+            axa_excludefromprint: currentCheck,
+          })
+          .then(response => {
+            node.RTExcludeFromPrintParent = currentCheck;
             // this.currentNode = node;
             this.items = this.items;
           })
@@ -460,7 +463,6 @@ export default class QPCcontrolVM {
     //! i dont have the GUID of the quote record --------- FIXED, Xrm.Page.data.entity.getId() returns the GUID
     //// TO DO i need to get the id of the parent "quote" record
     //* Xrm.Page.data.entity.getId() returns the GUID of the current quote record
-
     // TODO this works now, i need to implement in the code
     try {
       console.log(Xrm.Page.data.entity.getEntityName());
@@ -495,14 +497,12 @@ export default class QPCcontrolVM {
   imageUrlChangeHandler = async (imageUrl: string, ImageNumber: number) => {
     let node = this.currentNode;
     // let oldNode = this.currentNode;
-
     if (
       node != null &&
       (node.EntityType == "nmc_equipmentbuilderline" ||
         node.EntityType == "quotedetail")
     ) {
       let key = "";
-
       let CurrentUrl = "";
       key =
         node.EntityType == "nmc_equipmentbuilderline"
@@ -510,11 +510,9 @@ export default class QPCcontrolVM {
           : ImageNumber === 0
             ? "crf08_url"
             : `crf08_url${ImageNumber + 1}`;
-
       CurrentUrl = imageUrl;
       node.PhotoURL[ImageNumber] = CurrentUrl;
       this.currentNode = node;
-
       try {
         let result = await this.pcfContext.webAPI.updateRecord(
           node.EntityType,

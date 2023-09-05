@@ -10,6 +10,7 @@ export interface RenderTree {
   RTPrintNote: boolean;
   RTPrintPrice: boolean;
   RTExcludeFromPrint: boolean;
+  RTExcludeFromPrintParent: boolean;
   PhotoURL: string[];
   children?: RenderTree[];
 }
